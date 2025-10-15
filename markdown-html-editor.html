@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Markdown ↔ HTML Live Editor — SolutionsTechnologie</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --panel: #121214;
+    --accent: #00c3ff;
+    --text: #f0f0f0;
+    --border: #222;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  header {
+    text-align: center;
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    background: var(--panel);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  .editor-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 60vh;
+    border-bottom: 1px solid var(--border);
+  }
+
+  textarea {
+    background: var(--panel);
+    border: none;
+    outline: none;
+    color: var(--text);
+    padding: 1rem;
+    font-size: 1rem;
+    resize: none;
+    width: 100%;
+    height: 100%;
+    border-right: 1px solid var(--border);
+  }
+
+  #preview1, #preview2 {
+    background: #0d0d0f;
+    padding: 1rem;
+    overflow-y: auto;
+    border-left: 1px solid var(--border);
+  }
+
+  footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border);
+    color: #888;
+    background: var(--panel);
+  }
+
+  footer span {
+    color: var(--accent);
+  }
+
+  /* Markdown preview style */
+  #preview1 h1, #preview2 h1,
+  #preview1 h2, #preview2 h2,
+  #preview1 h3, #preview2 h3 {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.3rem;
+    color: var(--accent);
+  }
+
+  #preview1 code, #preview2 code {
+    background: #1e1e22;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+
+  #preview1 pre, #preview2 pre {
+    background: #1a1a1d;
+    padding: 0.6rem;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+
+  .toolbar {
+    text-align: center;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem;
+  }
+
+  button {
+    background: var(--accent);
+    border: none;
+    color: #000;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 0 0.3rem;
+    transition: all 0.2s;
+  }
+
+  button:hover {
+    background: #00a8e8;
+  }
+
+  @media (max-width: 900px) {
+    .editor-container {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>Markdown ↔ HTML Live Editor — SolutionsTechnologie</header>
+
+<!-- First Editor -->
+<div class="toolbar">
+  <button onclick="toggleHTML(1)">Show HTML Output</button>
+</div>
+<div class="editor-container">
+  <textarea id="editor1" placeholder="Write Markdown here..."></textarea>
+  <div id="preview1"></div>
+</div>
+
+<!-- Second Editor -->
+<div class="toolbar">
+  <button onclick="toggleHTML(2)">Show HTML Output</button>
+</div>
+<div class="editor-container">
+  <textarea id="editor2" placeholder="Write Markdown here..."></textarea>
+  <div id="preview2"></div>
+</div>
+
+<footer>
+  Powered by <span>SolutionsTechnologie</span> © 2025
+</footer>
+
+<script>
+  const editors = [
+    { editor: document.getElementById('editor1'), preview: document.getElementById('preview1'), showHTML: false },
+    { editor: document.getElementById('editor2'), preview: document.getElementById('preview2'), showHTML: false }
+  ];
+
+  editors.forEach((set, index) => {
+    set.editor.addEventListener('input', () => updatePreview(index));
+    updatePreview(index);
+  });
+
+  function updatePreview(i) {
+    const { editor, preview, showHTML } = editors[i];
+    const raw = editor.value;
+    if (showHTML) {
+      preview.textContent = marked.parse(raw);
+    } else {
+      preview.innerHTML = marked.parse(raw);
+    }
+  }
+
+  function toggleHTML(i) {
+    editors[i-1].showHTML = !editors[i-1].showHTML;
+    updatePreview(i-1);
+  }
+</script>
+
+</body>
+</html>
