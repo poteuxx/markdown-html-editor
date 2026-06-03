@@ -2,112 +2,57 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Markdown ↔ HTML Live Editor — SolutionsTechnologie</title>
 <link rel="icon" href="https://i.imgur.com/JrjM1jf.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js?v=2"></script>
 <style>
   :root {
     --bg: #0b0b0c;
-    --panel: #121214;
+    --panel: rgba(18, 18, 20, 0.85);
     --accent: #00c3ff;
     --text: #f0f0f0;
     --border: #222;
+    --glass: rgba(255, 255, 255, 0.08);
+    --shadow: rgba(0,0,0,0.4);
   }
-
   body {
     margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    background: linear-gradient(135deg, #0b0b0c 0%, #1a1a1e 100%);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
   }
-
   header {
     text-align: center;
-    padding: 1.2rem;
-    border-bottom: 1px solid var(--border);
-    font-size: 1.4rem;
-    font-weight: 600;
+    padding: 1.5rem 1rem;
+    background: var(--panel);
+    color: var(--accent);
+    font-size: 1.6rem;
+    font-weight: 700;
     letter-spacing: 0.5px;
-    color: var(--accent);
-    background: var(--panel);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  }
-
-  .editor-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    height: 60vh;
     border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 6px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
-
-  textarea {
-    background: var(--panel);
-    border: none;
-    outline: none;
-    color: var(--text);
-    padding: 1rem;
-    font-size: 1rem;
-    resize: none;
-    width: 100%;
-    height: 100%;
-    border-right: 1px solid var(--border);
-  }
-
-  #preview1, #preview2 {
-    background: #0d0d0f;
-    padding: 1rem;
-    overflow-y: auto;
-    border-left: 1px solid var(--border);
-  }
-
-  footer {
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.9rem;
-    border-top: 1px solid var(--border);
-    color: #888;
-    background: var(--panel);
-  }
-
-  footer span {
-    color: var(--accent);
-  }
-
-  /* Markdown preview style */
-  #preview1 h1, #preview2 h1,
-  #preview1 h2, #preview2 h2,
-  #preview1 h3, #preview2 h3 {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.3rem;
-    color: var(--accent);
-  }
-
-  #preview1 code, #preview2 code {
-    background: #1e1e22;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    font-family: monospace;
-  }
-
-  #preview1 pre, #preview2 pre {
-    background: #1a1a1d;
-    padding: 0.6rem;
-    border-radius: 6px;
-    overflow-x: auto;
-  }
-
   .toolbar {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
     background: var(--panel);
-    border-bottom: 1px solid var(--border);
     padding: 0.6rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 70px; /* header height */
+    z-index: 9;
   }
-
-  button {
+  .toolbar button {
     background: var(--accent);
     border: none;
     color: #000;
@@ -115,74 +60,177 @@
     padding: 0.5rem 1rem;
     border-radius: 6px;
     cursor: pointer;
-    margin: 0 0.3rem;
-    transition: all 0.2s;
+    transition: transform 0.2s, background 0.2s;
   }
-
-  button:hover {
+  .toolbar button:hover {
     background: #00a8e8;
+    transform: translateY(-2px);
   }
-
+  .editor-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    flex-grow: 1;
+  }
+  textarea, .preview {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 12px var(--shadow);
+    color: var(--text);
+    padding: 1rem;
+    font-size: 1rem;
+    resize: none;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+  textarea {
+    outline: none;
+  }
+  .preview {
+    overflow-y: auto;
+  }
+  .preview h1, .preview h2, .preview h3 {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.3rem;
+    color: var(--accent);
+  }
+  .preview code {
+    background: #1e1e22;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+  .preview pre {
+    background: #1a1a1d;
+    padding: 0.6rem;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    background: var(--panel);
+    color: #888;
+    border-top: 1px solid var(--border);
+  }
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .theme-toggle {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--accent);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px var(--shadow);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:hover { transform: scale(1.1); }
   @media (max-width: 900px) {
-    .editor-container {
-      grid-template-columns: 1fr;
-      height: auto;
-    }
+    .editor-container { grid-template-columns: 1fr; height: auto; }
+    .toolbar { top: 60px; }
   }
 </style>
 </head>
 <body>
-
 <header>Markdown ↔ HTML Live Editor — SolutionsTechnologie</header>
-
-<!-- First Editor -->
 <div class="toolbar">
   <button onclick="toggleHTML(1)">Show HTML Output</button>
+  <button onclick="copyHTML(1)">Copy HTML</button>
+  <button onclick="downloadHTML(1)">Download HTML</button>
+  <button onclick="toggleHTML(2)">Show HTML Output</button>
+  <button onclick="copyHTML(2)">Copy HTML</button>
+  <button onclick="downloadHTML(2)">Download HTML</button>
 </div>
 <div class="editor-container">
   <textarea id="editor1" placeholder="Write Markdown here..."></textarea>
-  <div id="preview1"></div>
-</div>
-
-<!-- Second Editor -->
-<div class="toolbar">
-  <button onclick="toggleHTML(2)">Show HTML Output</button>
+  <div id="preview1" class="preview"></div>
 </div>
 <div class="editor-container">
   <textarea id="editor2" placeholder="Write Markdown here..."></textarea>
-  <div id="preview2"></div>
+  <div id="preview2" class="preview"></div>
 </div>
-
 <footer>
-  
+  Crafted with ❤️ by <a href="https://solutions-technologie.com" target="_blank">SolutionsTechnologie</a>
 </footer>
-
+<button class="theme-toggle" title="Toggle Dark/Light Theme" onclick="toggleTheme()">🌓</button>
 <script>
   const editors = [
     { editor: document.getElementById('editor1'), preview: document.getElementById('preview1'), showHTML: false },
     { editor: document.getElementById('editor2'), preview: document.getElementById('preview2'), showHTML: false }
   ];
 
-  editors.forEach((set, index) => {
-    set.editor.addEventListener('input', () => updatePreview(index));
-    updatePreview(index);
+  // Initialize editors
+  editors.forEach((set, idx) => {
+    set.editor.addEventListener('input', () => updatePreview(idx));
+    updatePreview(idx);
   });
 
   function updatePreview(i) {
     const { editor, preview, showHTML } = editors[i];
     const raw = editor.value;
+    const html = marked.parse(raw);
     if (showHTML) {
-      preview.textContent = marked.parse(raw);
+      preview.textContent = html; // show raw HTML as text
     } else {
-      preview.innerHTML = marked.parse(raw);
+      preview.innerHTML = html; // render markdown
     }
   }
 
   function toggleHTML(i) {
-    editors[i-1].showHTML = !editors[i-1].showHTML;
-    updatePreview(i-1);
+    const idx = i - 1;
+    editors[idx].showHTML = !editors[idx].showHTML;
+    updatePreview(idx);
+  }
+
+  function copyHTML(i) {
+    const idx = i - 1;
+    const html = marked.parse(editors[idx].editor.value);
+    navigator.clipboard.writeText(html).then(() => {
+      alert('HTML copied to clipboard!');
+    });
+  }
+
+  function downloadHTML(i) {
+    const idx = i - 1;
+    const html = marked.parse(editors[idx].editor.value);
+    const blob = new Blob([html], {type: 'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `markdown_${i}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Theme toggle (dark is default, light swaps colors)
+  function toggleTheme() {
+    const root = document.documentElement;
+    const isDark = root.style.getPropertyValue('--bg') === '#0b0b0c';
+    if (isDark) {
+      root.style.setProperty('--bg', '#f5f5f5');
+      root.style.setProperty('--panel', 'rgba(255,255,255,0.85)');
+      root.style.setProperty('--text', '#111');
+      root.style.setProperty('--border', '#ccc');
+      root.style.setProperty('--accent', '#0066ff');
+    } else {
+      root.style.setProperty('--bg', '#0b0b0c');
+      root.style.setProperty('--panel', 'rgba(18,18,20,0.85)');
+      root.style.setProperty('--text', '#f0f0f0');
+      root.style.setProperty('--border', '#222');
+      root.style.setProperty('--accent', '#00c3ff');
+    }
   }
 </script>
-
 </body>
 </html>
